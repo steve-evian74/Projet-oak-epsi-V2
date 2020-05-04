@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+                <div id="map"></div>
+    <img src="{{ asset('build/mapbox-icon.png') }}" alt="ACME logo">
+
+{% block javascripts %}
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1Ijoic3RldmUtZXZpYW4iLCJhIjoiY2s5aDNydGVyMDRzZzN1cW1jMjQ5NXI3OCJ9.Dcw0mYrj0yIf2c5l0IZCUw';
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+            center: [-74.5, 40], // starting position [lng, lat]
+            zoom: 9 // starting zoom
+        });
+
+
+        var geojson = {
+            type: 'FeatureCollection',
+            features: [{
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [Math.floor((Math.random() * 180) + 1), Math.floor((Math.random() * 180) + 1)]
+                },
+                properties: {
+                    title: 'Mapbox',
+                    description: 'Washington, D.C.'
+                }
+            },
+                {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [-122.414, 37.776]
+                    },
+                    properties: {
+                        title: 'Mapbox',
+                        description: 'San Francisco, California'
+                    }
+                }]
+        };
+        console.log(geojson.features);
+        // add markers to map
+        geojson.features.forEach(function(marker) {
+
+            // create a HTML element for each feature
+            var el = document.createElement('div');
+            el.className = 'marker';
+
+            // make a marker for each feature and add to the map
+            new mapboxgl.Marker(el)
+                .setLngLat(marker.geometry.coordinates)
+                .addTo(map);
+        });
+    </script>
+        {%  endblock %}
+{%  endblock %}
