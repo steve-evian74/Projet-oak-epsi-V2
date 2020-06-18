@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,6 +42,16 @@ class DataOak
      * @ORM\Column(type="smallint")
      */
     private $Qualite_Air;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Historique", mappedBy="dataOak")
+     */
+    private $fk_Historique;
+
+    public function __construct()
+    {
+        $this->fk_Historique = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,4 +117,36 @@ class DataOak
 
         return $this;
     }
+
+    /**
+     * @return Collection|Historique[]
+     */
+    public function getFkHistorique(): Collection
+    {
+        return $this->fk_Historique;
+    }
+
+    public function addFkHistorique(Historique $fkHistorique): self
+    {
+        if (!$this->fk_Historique->contains($fkHistorique)) {
+            $this->fk_Historique[] = $fkHistorique;
+            $fkHistorique->setDataOak($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFkHistorique(Historique $fkHistorique): self
+    {
+        if ($this->fk_Historique->contains($fkHistorique)) {
+            $this->fk_Historique->removeElement($fkHistorique);
+            // set the owning side to null (unless already changed)
+            if ($fkHistorique->getDataOak() === $this) {
+                $fkHistorique->setDataOak(null);
+            }
+        }
+
+        return $this;
+    }
+
 }
