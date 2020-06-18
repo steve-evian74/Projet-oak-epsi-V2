@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DataOakController extends AbstractController
 {
+
     /**
      * @Route("/", name="data_oak_index", methods={"GET"})
      */
