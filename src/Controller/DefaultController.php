@@ -20,7 +20,7 @@ class DefaultController extends AbstractController
      */
     public function index(DataOakRepository $dataOakRepository): Response
     {
-        return $this->render('index.html.twig', ['data_oaks' => $dataOakRepository->findAll()
-        ]);
+
+        return $this->render('index.html.twig', ['data_oaks' => $dataOakRepository->findAll()  ]);
     }
 }

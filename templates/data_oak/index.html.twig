@@ -3,17 +3,18 @@
 {% block title %}DataOak index{% endblock %}
 
 {% block body %}
-    <h1>DataOak index</h1>
+    <div class="container">
+    <h1>La liste des sondes </h1>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Name</th>
+                <th>Nom</th>
                 <th>Latitude</th>
                 <th>Longitude</th>
-                <th>TimeStamp</th>
-                <th>Qualite_Air</th>
+                <th>Date</th>
+                <th>Qualité de l'air</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -24,11 +25,11 @@
                 <td>{{ data_oak.name }}</td>
                 <td>{{ data_oak.latitude }}</td>
                 <td>{{ data_oak.longitude }}</td>
-                <td>{{ data_oak.TimeStamp }}</td>
+                <td>{{ data_oak.TimeStamp| date("d/m/Y") }}</td>
                 <td>{{ data_oak.QualiteAir }}</td>
                 <td>
-                    <a href="{{ path('data_oak_show', {'id': data_oak.id}) }}">show</a>
-                    <a href="{{ path('data_oak_edit', {'id': data_oak.id}) }}">edit</a>
+                    <a href="{{ path('data_oak_show', {'id': data_oak.id}) }}">Afficher</a>
+                    <a href="{{ path('data_oak_edit', {'id': data_oak.id}) }}">Editer</a>
                 </td>
             </tr>
         {% else %}
@@ -39,5 +40,6 @@
         </tbody>
     </table>
 
-    <a href="{{ path('data_oak_new') }}">Create new</a>
+    <a href="{{ path('data_oak_new') }}">Ajouter une sonde  ?</a>
+    </div>
 {% endblock %}

@@ -3,9 +3,20 @@
 {% block title %}New DataOak{% endblock %}
 
 {% block body %}
-    <h1>Create new DataOak</h1>
+<div class="container">
+    <h1>Ajouter une sonde </h1>
 
     {{ include('data_oak/_form.html.twig') }}
 
-    <a href="{{ path('data_oak_index') }}">back to list</a>
+    <a href="{{ path('data_oak_index') }}">Retour à la liste</a>
+</div>
+    <script>
+        $(document).ready(function() {
+            // you may need to change this code if you are not using Bootstrap Datepicker
+            $('.js-datepicker').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+        });
+    </script>
 {% endblock %}
+
