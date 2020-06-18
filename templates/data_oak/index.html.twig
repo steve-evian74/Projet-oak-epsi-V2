@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DataOak index{% endblock %}
+
+{% block body %}
+    <h1>DataOak index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>TimeStamp</th>
+                <th>Qualite_Air</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for data_oak in data_oaks %}
+            <tr>
+                <td>{{ data_oak.id }}</td>
+                <td>{{ data_oak.name }}</td>
+                <td>{{ data_oak.latitude }}</td>
+                <td>{{ data_oak.longitude }}</td>
+                <td>{{ data_oak.TimeStamp }}</td>
+                <td>{{ data_oak.QualiteAir }}</td>
+                <td>
+                    <a href="{{ path('data_oak_show', {'id': data_oak.id}) }}">show</a>
+                    <a href="{{ path('data_oak_edit', {'id': data_oak.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('data_oak_new') }}">Create new</a>
+{% endblock %}

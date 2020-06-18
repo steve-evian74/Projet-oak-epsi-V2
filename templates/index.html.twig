@@ -1,0 +1,235 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Numéro</th>
+                        <th scope="col">Lattitude</th>
+                        <th scope="col">Longtitude</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Qualité de l'air</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for data_oak in data_oaks %}
+                        <tr>
+                            <td>{{ data_oak.id }}</td>
+                            <td>{{ data_oak.latitude }}</td>
+                            <td>{{ data_oak.longitude }}</td>
+                            <td>{{ data_oak.TimeStamp|date("m/d/Y") }}</td>
+                            <td class="QualiteAir">{{ data_oak.QualiteAir }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-6">
+                <div id="map"></div>
+            </div>
+        </div>
+
+    </div>
+    <img src="{{ asset('build/mapbox-icon.png') }}" alt="ACME logo">
+
+    {% block javascripts %}
+        <script>
+            var QauliteAire = parseInt($(".QualiteAir").text());
+
+            if (QauliteAire <= 100 && QauliteAire >= 80) {
+                $(".QualiteAir").css("color", "green");
+            }
+            if (QauliteAire <= 79 && QauliteAire >= 50) {
+                $(".QualiteAir").css("color", "orange");
+            }
+            if (QauliteAire <= 49 && QauliteAire >= 0) {
+                $(".QualiteAir").css("color", "red");
+            }
+
+        </script>
+
+
+        <script>
+
+            mapboxgl.accessToken = 'pk.eyJ1Ijoic3RldmUtZXZpYW4iLCJhIjoiY2s5aDNydGVyMDRzZzN1cW1jMjQ5NXI3OCJ9.Dcw0mYrj0yIf2c5l0IZCUw';
+            var map = new mapboxgl.Map({
+                container: 'map', // container id
+                style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+                center: [5.714170, 45.174777], // starting position [lng, lat]
+                zoom: 10 // starting zoom
+            });
+            /*
+                        map.on('load', function () {
+                            map.addSource('maine', {
+                                'type': 'geojson',
+                                'data': {
+                                    'type': 'Feature',
+                                    'geometry': {
+                                        'type': 'Polygon',
+                                        'coordinates': [
+                                            [
+                                                [5.7357819, 45.1875602],
+                                                [5.7357819, 45.1875602],
+                                                [5.7357819, 45.1875602],
+                                                [5.7357819, 45.1875602]
+
+
+                                            ]
+                                        ]
+                                    }
+                                }
+                            });
+                            map.addLayer({
+                                'id': 'maine',
+                                'type': 'fill',
+                                'source': 'maine',
+                                'layout': {},
+                                'paint': {
+                                    'fill-color': 'red',
+                                    'fill-opacity': 0.8
+                                }
+                            });
+                        });*/
+
+
+            var createGeoJSONCircle = function (center, radiusInKm, points) {
+                    if (!points) points = 64;
+                    var tableLatLong = [];
+                    for (var test = 0; test < center.length; test++) {
+                        var coords = {
+                            latitude: center[test][1],
+                            longitude: center[test][0]
+                        };
+
+                        var km = radiusInKm;
+                        var ret = [];
+                        var tableLonLat = [];
+                        var distanceX = km / (111.320 * Math.cos(coords.latitude * Math.PI / 180));
+                        var distanceY = km / 110.574;
+
+                        var theta, x, y;
+                        for (var i = 0; i < points; i++) {
+                            theta = (i / points) * (2 * Math.PI);
+                            x = distanceX * Math.cos(theta);
+                            y = distanceY * Math.sin(theta);
+
+                           ret.push([coords.longitude + x, coords.latitude + y]);
+                            //ItemArray[test].LongLat.push(" test");
+                        }
+                        ret.push(ret[0]);
+                        tableLatLong[test] = ret;
+                    }
+                    console.log(tableLatLong[0]);
+
+                    return {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": [
+                                {
+                                    "type": "Feature",
+                                    "geometry": {
+                                        "type": "Polygon",
+                                        "coordinates": [tableLatLong[0]]
+                                    }
+                                },
+                                {
+                                    "type": "Feature",
+                                    "geometry": {
+                                        "type": "Polygon",
+                                        "coordinates": [tableLatLong[1]]
+                                    },
+
+                                }
+                            ]
+                        }
+                    };
+                }
+            ;
+            map.on('load', function () {
+                var a = [];
+                a[0] = [5.7357819, 45.1875602];
+                a[1] = [5.711346, 45.175563];
+                var b = [];
+                b[0] = [5.774689,45.209134];
+                b[1] = [5.711346, 45.175563];
+                //console.log(a.length);
+                //console.log(createGeoJSONCircle(a, 0.5));
+
+                map.addSource("test", createGeoJSONCircle(a, 0.5));
+                map.addLayer({
+                    "id": "polygon",
+                    "type": "fill",
+                    "source": "test",
+                    "layout": {},
+                    "paint": {
+                        "fill-color": "red",
+                        "fill-opacity": 0.6
+                    }
+                });
+
+            });
+
+            /*
+
+                    var geojson = {
+                        type: 'FeatureCollection',
+                        features: [{
+                            type: 'Feature',
+                            geometry: {
+                                type: 'Point',
+                                coordinates: [Math.floor((Math.random() * 90) + 1), Math.floor((Math.random() * 90) + 1)]
+                            },
+                            properties: {
+                                title: 'Mapbox',
+                                description: 'Washington, D.C.'
+                            }
+                        },
+                            {
+                                type: 'Feature',
+                                geometry: {
+                                    type: 'Point',
+                                    coordinates: [Math.floor((Math.random() * 50) + 1), Math.floor((Math.random() * 50) + 1)]
+                                },
+                                properties: {
+                                    title: 'Mapbox',
+                                    description: 'San Francisco, California'
+                                }
+                            }]
+                    };
+                    console.log(geojson.features);
+                    // add markers to map
+                    geojson.features.forEach(function(marker) {
+
+                        // create a HTML element for each feature
+                        var el = document.createElement('div');
+                        el.className = 'marker';
+
+                        // make a marker for each feature and add to the map
+                        new mapboxgl.Marker(el)
+                            .setLngLat(marker.geometry.coordinates)
+                            .addTo(map);
+                    });*/
+            /*
+    this.map.once('load', () => {
+      this.map.resize()
+    })*/
+
+
+            $.ajax({
+                url: 'https://api.mapbox.com/geocoding/v5/mapbox.places/5.7357819,45.1875602.json?access_token=pk.eyJ1Ijoic3RldmUtZXZpYW4iLCJhIjoiY2s5aDNweGVuMDhhODNrbnhqMXY0MTVkayJ9.oj6Z6lFKLyQb-Umk48YcBA',
+                success: function (data) {
+                    console.log(data);
+                    //process the JSON data etc
+                }
+            })
+
+
+        </script>
+    {% endblock %}
+{% endblock %}
