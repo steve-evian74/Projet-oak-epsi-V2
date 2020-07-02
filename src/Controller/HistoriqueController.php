@@ -32,9 +32,11 @@ class HistoriqueController extends AbstractController
     {
         $historique = new Historique();
         $form = $this->createForm(HistoriqueType::class, $historique);
+
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+
+       if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($historique);
             $entityManager->flush();

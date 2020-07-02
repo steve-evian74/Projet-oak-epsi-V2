@@ -3,6 +3,7 @@
 {% block title %}Historique index{% endblock %}
 
 {% block body %}
+    <div class="container">
     <h1>Historique index</h1>
 
     <table class="table">
@@ -11,6 +12,7 @@
                 <th>Id</th>
                 <th>Date</th>
                 <th>Qualite</th>
+                <th>Sonde</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -20,6 +22,7 @@
                 <td>{{ historique.id }}</td>
                 <td>{{ historique.Date ? historique.Date|date('Y-m-d') : '' }}</td>
                 <td>{{ historique.Qualite }}</td>
+                <td>{{ historique.dataOak.name }}</td>
                 <td>
                     <a href="{{ path('historique_show', {'id': historique.id}) }}">show</a>
                     <a href="{{ path('historique_edit', {'id': historique.id}) }}">edit</a>
@@ -34,4 +37,5 @@
     </table>
 
     <a href="{{ path('historique_new') }}">Create new</a>
+    </div>
 {% endblock %}

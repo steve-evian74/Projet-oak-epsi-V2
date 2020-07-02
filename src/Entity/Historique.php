@@ -55,7 +55,7 @@ class Historique
 
     public function setQualite(int $Qualite): self
     {
-        $this->qualite = $Qualite;
+        $this->Qualite = $Qualite;
 
         return $this;
     }
